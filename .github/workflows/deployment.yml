@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.AGRISOL_PRIVATE_SECRET }}
           port: 22
-          source: "docker-compose.yml"
+          source: "docker-compose.yml,api-agrisol.conf,bd-agrisol.conf,web-agrisol.conf"
           target: /opt/applications/agrisol/${{ env.IMAGE }}
       - name: execute commands to run container
         uses: appleboy/ssh-action@v1
