@@ -1,0 +1,46 @@
+name: deploy agrisol back
+on: [push]
+env:
+  IMAGE: agrisol-proxy
+  VERSION: 0.0.1
+jobs:
+  create-folder:
+    name: create folder
+    runs-on: ubuntu-latest
+    steps:
+      - name: execute commands
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.AGRISOL_PRIVATE_SECRET }}
+          port: 22
+          script: |
+            mkdir /opt/applications/agrisol/${{ env.IMAGE }}
+            ls -al /opt/applications/agrisol
+
+  run-container:
+    name: run container
+    runs-on: ubuntu-latest
+    needs: [ 'create-folder' ]
+    steps:
+      - name: cloner le repertoire
+        uses: actions/checkout@master
+      - name: copy file via ssh key
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.AGRISOL_PRIVATE_SECRET }}
+          port: 22
+          source: "docker-compose.yml"
+          target: /opt/applications/agrisol/${{ env.IMAGE }}
+      - name: execute commands to run container
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.AGRISOL_PRIVATE_SECRET }}
+          port: 22
+          script: |
+           docker-compose -f /opt/applications/agrisol/${{ env.IMAGE }}/docker-compose.yml up -d
