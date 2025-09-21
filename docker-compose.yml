@@ -8,7 +8,7 @@ services:
     volumes:
       - ./db-agrisol.config:/etc/nginx/config.d/db-agrisol.conf
       - ./api-agrisol.config:/etc/nginx/config.d/api-agrisol.conf
-      ##- ./web-agrisol.config:/etc/nginx/config.d/web-agrisol.conf
+      - ./web-agrisol.config:/etc/nginx/config.d/web-agrisol.conf
     networks:
       - applications-network
 
